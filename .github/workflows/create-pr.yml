@@ -6,8 +6,8 @@ on:
       - 'feature/**'
 
 permissions:
-  contents: write  # Dá permissão de escrita para o token
-  
+  contents: write
+
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
@@ -16,12 +16,22 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Create a Pull Request
-      uses: peter-evans/create-pull-request@v5
-      with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        base: main
-        head: ${{ github.ref_name }}
-        title: 'PR automático de ${{ github.ref_name }} para main'
-        body: 'Este é um pull request criado de forma automática de ${{ github.ref_name }} para main.'
-        draft: false
+    - name: Install GitHub CLI
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y gh
+
+    - name: Check if PR exists
+      id: check_pr
+      run: |
+        pr_list=$(gh pr list --base main --head ${{ github.ref_name }} --state open)
+        echo "PR_LIST=$pr_list" >> $GITHUB_ENV
+      env:
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
+
+    - name: Create Pull Request if none exists
+      if: env.PR_LIST == ''
+      run: |
+        gh pr create --base main --head ${{ github.ref_name }} --title "PR automático de ${{ github.ref_name }} para main" --body "Este é um PR automático de ${{ github.ref_name }} para main."
+      env:
+        GH_TOKEN: ${{ secrets.PAT_TOKEN }}
