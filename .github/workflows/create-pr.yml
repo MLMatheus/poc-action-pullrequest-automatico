@@ -24,12 +24,13 @@ jobs:
     - name: Check if PR exists
       id: check_pr
       run: |
-        gh pr list --base main --head ${{ github.ref_name }} --state open
+        pr_list=$(gh pr list --base main --head ${{ github.ref_name }} --state open)
+        echo "PR_LIST=$pr_list" >> $GITHUB_ENV
       env:
         GH_TOKEN: ${{ secrets.PAT_TOKEN }}
 
     - name: Create Pull Request if none exists
-      if: ${{ steps.check_pr.outputs.exit_code }} == '1'
+      if: env.PR_LIST == ''
       run: |
         gh pr create --base main --head ${{ github.ref_name }} --title "PR automático de ${{ github.ref_name }} para main" --body "Este é um PR automático de ${{ github.ref_name }} para main."
       env:
