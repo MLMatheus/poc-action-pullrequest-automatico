@@ -5,6 +5,9 @@ on:
     branches:
       - 'feature/**'
 
+permissions:
+  contents: write  # Dá permissão de escrita para o token
+  
 jobs:
   create-pull-request:
     runs-on: ubuntu-latest
@@ -22,3 +25,4 @@ jobs:
         head: ${{ github.ref_name }}
         title: 'PR automático de ${{ github.ref_name }} para main'
         body: 'Este é um pull request criado de forma automática de ${{ github.ref_name }} para main.'
+
