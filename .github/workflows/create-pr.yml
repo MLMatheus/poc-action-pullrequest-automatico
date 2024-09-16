@@ -20,9 +20,8 @@ jobs:
       uses: peter-evans/create-pull-request@v5
       with:
         token: ${{ secrets.GITHUB_TOKEN }}
-        branch: main
-        base: ${{ github.ref_name }}
+        base: main
         head: ${{ github.ref_name }}
         title: 'PR automático de ${{ github.ref_name }} para main'
         body: 'Este é um pull request criado de forma automática de ${{ github.ref_name }} para main.'
-
+        draft: false
