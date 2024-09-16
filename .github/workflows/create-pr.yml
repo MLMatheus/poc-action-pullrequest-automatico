@@ -1,0 +1,24 @@
+name: Create Pull Request from feature to main
+
+on:
+  push:
+    branches:
+      - 'feature/**'
+
+jobs:
+  create-pull-request:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Create a Pull Request
+      uses: peter-evans/create-pull-request@v5
+      with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        branch: main  # Branch de destino para o PR
+        base: main
+        head: ${{ github.ref_name }}
+        title: 'PR automático de ${{ github.ref_name }} para main'
+        body: 'Este é um pull request criado de forma automática de ${{ github.ref_name }} para main.'
